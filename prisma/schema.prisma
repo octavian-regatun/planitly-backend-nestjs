@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id               Int                @id @default(autoincrement())
+  title            String             @db.VarChar(255)
+  description      String?            @db.Text
+  picture          String?            @db.VarChar(255)
+  color            String             @db.VarChar(255)
+  allDay           Boolean            @db.Boolean
+  startAt          DateTime           @db.Timestamp(0)
+  endAt            DateTime           @db.Timestamp(0)
+  authorId         Int                @db.Integer
+  author           User               @relation(fields: [authorId], references: [id])
+  createdAt        DateTime           @default(now()) @db.Timestamp(0)
+  updatedAt        DateTime           @default(now()) @db.Timestamp(0)
+  EventParticipant EventParticipant[]
+}
+
+model EventParticipant {
+  id            Int      @id @default(autoincrement())
+  eventId       Int      @db.Integer
+  participantId Int      @db.Integer
+  createdAt     DateTime @default(now()) @db.Timestamp(0)
+  updatedAt     DateTime @default(now()) @db.Timestamp(0)
+  Event         Event    @relation(fields: [eventId], references: [id])
+  User          User     @relation(fields: [participantId], references: [id])
+}
+
+model Friendship {
+  id                                Int      @id @default(autoincrement())
+  recipientId                       Int      @db.Integer
+  requesterId                       Int      @db.Integer
+  status                            String   @db.VarChar(255)
+  createdAt                         DateTime @default(now()) @db.Timestamp(0)
+  updatedAt                         DateTime @default(now()) @db.Timestamp(0)
+  User_Friendship_recipientIdToUser User     @relation("Friendship_recipientIdToUser", fields: [recipientId], references: [id])
+  User_Friendship_requesterIdToUser User     @relation("Friendship_requesterIdToUser", fields: [requesterId], references: [id])
+}
+
+model Location {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  latitude  Float    @db.DoublePrecision
+  longitude Float    @db.DoublePrecision
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @db.Timestamp(0)
+}
+
+model User {
+  id                                      Int                @id @default(autoincrement())
+  username                                String             @unique @db.VarChar(255)
+  picture                                 String?            @db.VarChar(255)
+  firstName                               String             @db.VarChar(255)
+  lastName                                String             @db.VarChar(255)
+  email                                   String             @unique @db.VarChar(255)
+  gender                                  String             @db.VarChar(255)
+  birthday                                DateTime?          @db.Date
+  locale                                  String?            @db.VarChar(255)
+  role                                    String             @db.VarChar(255)
+  authProvider                            String             @db.VarChar(255)
+  createdAt                               DateTime           @default(now()) @db.Timestamp(0)
+  updatedAt                               DateTime           @updatedAt @db.Timestamp(0)
+  EventParticipant                        EventParticipant[]
+  Friendship_Friendship_recipientIdToUser Friendship[]       @relation("Friendship_recipientIdToUser")
+  Friendship_Friendship_requesterIdToUser Friendship[]       @relation("Friendship_requesterIdToUser")
+  Event                                   Event[]
+}
