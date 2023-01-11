@@ -18,11 +18,11 @@ import { CreateEventDto } from './dto/createEvent.dto';
 import { UpdateEventDto } from './dto/updateEvent.dto';
 import { EventsService } from './events.service';
 
+@UseGuards(JwtGuard)
 @Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
-  @UseGuards(JwtGuard)
   @Get()
   async findAll(
     @Req() req: Request,
@@ -32,13 +32,11 @@ export class EventsController {
     if (isAuthor) return await this.eventsService.findByIsAuthor(req.user.id);
   }
 
-  @UseGuards(JwtGuard)
   @Post()
   async create(@Req() req: Request, @Body() createEventDto: CreateEventDto) {
     return await this.eventsService.create(req.user.id, createEventDto);
   }
 
-  @UseGuards(JwtGuard)
   @Patch(':id')
   async update(
     @Req() req: Request,

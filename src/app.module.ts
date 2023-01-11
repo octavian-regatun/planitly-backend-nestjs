@@ -9,6 +9,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { CalendarModule } from './calendar/calendar.module';
 import { LocationModule } from './location/location.module';
+import { FriendshipsModule } from './friendships/friendships.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { LocationModule } from './location/location.module';
     },
     CalendarModule,
     LocationModule,
+    FriendshipsModule,
   ],
 })
 export class AppModule {}

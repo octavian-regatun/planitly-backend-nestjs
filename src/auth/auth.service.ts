@@ -21,11 +21,12 @@ export class AuthService {
     this.googleClient = new OAuth2Client({
       clientId: configService.get('GOOGLE_CLIENT_ID'),
       clientSecret: configService.get('GOOGLE_CLIENT_SECRET'),
+      redirectUri: 'postmessage',
     });
   }
 
-  async authenticate(tokenId: string) {
-    const payload = await this.validateGoogleToken(tokenId);
+  async authenticate(code: string) {
+    const payload = await this.validateGoogleToken(code);
 
     const user = await this.findOrCreateUser(payload);
 
@@ -34,9 +35,11 @@ export class AuthService {
     return token;
   }
 
-  private async validateGoogleToken(tokenId: string) {
+  private async validateGoogleToken(code: string) {
+    const { tokens } = await this.googleClient.getToken(code);
+
     const ticket = await this.googleClient.verifyIdToken({
-      idToken: tokenId,
+      idToken: tokens.id_token,
       audience: this.configService.get('GOOGLE_CLIENT_ID'),
     });
 

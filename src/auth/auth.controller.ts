@@ -19,15 +19,15 @@ export class AuthController {
 
   @Post('google')
   async googleLogin(
-    @Body() body: { tokenId: string },
+    @Body() body: { code: string },
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<Response<any, Record<string, any>>> {
-    const { tokenId } = body;
+    const { code } = body;
 
     let jwt: string;
     try {
-      jwt = await this.authService.authenticate(tokenId);
+      jwt = await this.authService.authenticate(code);
     } catch (e: any) {
       throw new HttpException('Invalid token', HttpStatus.BAD_REQUEST);
     }
@@ -37,7 +37,7 @@ export class AuthController {
 
   @UseGuards(JwtGuard)
   @Get()
-  async checkAuth(@Req() req: Request): Promise<any> {
+  checkAuth(): HttpStatus {
     return HttpStatus.OK;
   }
 }
