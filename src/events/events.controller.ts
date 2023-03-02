@@ -32,6 +32,11 @@ export class EventsController {
     if (isAuthor) return await this.eventsService.findByIsAuthor(req.user.id);
   }
 
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.eventsService.findById(id);
+  }
+
   @Post()
   async create(@Req() req: Request, @Body() createEventDto: CreateEventDto) {
     return await this.eventsService.create(req.user.id, createEventDto);

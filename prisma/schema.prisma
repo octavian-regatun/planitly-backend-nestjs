@@ -1,7 +1,8 @@
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl"]
-  output = "../node_modules/.prisma/client"
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native", "linux-musl"]
+  output          = "../node_modules/.prisma/client"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -36,14 +37,14 @@ model EventParticipant {
 }
 
 model Friendship {
-  id                                Int      @id @default(autoincrement())
-  recipientId                       Int      @db.Integer
-  requesterId                       Int      @db.Integer
-  status                            String   @db.VarChar(255)
-  createdAt                         DateTime @default(now()) @db.Timestamp(0)
-  updatedAt                         DateTime @default(now()) @db.Timestamp(0)
-  User_Friendship_recipientIdToUser User     @relation("Friendship_recipientIdToUser", fields: [recipientId], references: [id])
-  User_Friendship_requesterIdToUser User     @relation("Friendship_requesterIdToUser", fields: [requesterId], references: [id])
+  id          Int      @id @default(autoincrement())
+  recipientId Int      @db.Integer
+  requesterId Int      @db.Integer
+  status      String   @db.VarChar(255)
+  createdAt   DateTime @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime @default(now()) @db.Timestamp(0)
+  recipient   User     @relation("Friendship_recipientIdToUser", fields: [recipientId], references: [id])
+  requester   User     @relation("Friendship_requesterIdToUser", fields: [requesterId], references: [id])
 }
 
 model Location {

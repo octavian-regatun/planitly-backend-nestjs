@@ -7,10 +7,54 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
+  async getAll(loggedUserId: number) {
+    const users = await this.prismaService.user.findMany();
+
+    return users.map((user) => {
+      return {
+        id: user.id,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        picture: user.picture,
+      };
+    });
+  }
+
   async get(id: number) {
     return this.prismaService.user.findUnique({
       where: {
         id,
+      },
+    });
+  }
+
+  async search(query: string, loggedUserId: number) {
+    return this.prismaService.user.findMany({
+      where: {
+        id: {
+          not: loggedUserId,
+        },
+        OR: [
+          {
+            username: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+          {
+            firstName: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+          {
+            lastName: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+        ],
       },
     });
   }
