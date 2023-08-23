@@ -22,13 +22,11 @@ import { FriendshipsModule } from './friendships/friendships.module';
     JwtModule,
     EventsModule,
     PassportModule,
-    {
-      ...NestJwtModule.register({
-        secret: process.env.JWT_SECRET,
-        signOptions: { expiresIn: '1d' },
-      }),
+    NestJwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '1d' },
       global: true,
-    },
+    }),
     CalendarModule,
     LocationModule,
     FriendshipsModule,
