@@ -64,8 +64,6 @@ export class AuthService {
       username: this.generateRandomUsername(),
       authProvider: Provider.GOOGLE,
       role: Role.BASIC,
-      birthday: null,
-      locale: null,
       picture: payload.picture || null,
     };
 

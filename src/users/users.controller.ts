@@ -9,34 +9,70 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { JwtGuard } from 'src/jwt/jwt.guard';
-import { UpdateUserDto } from './dto/updateUser.dto';
-import { SameUserGuard } from './sameUser.guard';
-import { UsersService } from './users.service';
+import { ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
+import { JwtGuard } from 'src/jwt/jwt.guard';
+import { PublicUserDto } from './dto/publicUser.dto';
+import { UpdateUserDto } from './dto/updateUser.dto';
+import { UsersService } from './users.service';
+import { MapperService } from 'src/mapper/mapper.service';
+import { User } from '@prisma/client';
+import { UserDto } from './dto/user.dto';
 
+@ApiSecurity('jwt')
+@ApiTags('users')
 @UseGuards(JwtGuard)
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private mapperService: MapperService,
+  ) {}
 
+  @ApiResponse({
+    status: 200,
+    type: [PublicUserDto],
+  })
   @Get()
-  async getAll(@Req() req: Request) {
-    return await this.usersService.getAll(req.user.id);
+  async findAll() {
+    const users = await this.usersService.findAll();
+
+    return this.mapperService.mapper.mapArray<User, PublicUserDto>(
+      users,
+      'User',
+      'PublicUserDto',
+    );
   }
 
+  @ApiResponse({
+    status: 200,
+    type: [PublicUserDto],
+  })
   @Get('search')
   async search(@Req() req: Request, @Query('query') query: string) {
-    return await this.usersService.search(query, req.user.id);
+    const users = await this.usersService.search(query, req.user.id);
+
+    return this.mapperService.mapper.mapArray<User, PublicUserDto>(
+      users,
+      'User',
+      'PublicUserDto',
+    );
   }
 
-  @UseGuards(SameUserGuard)
+  @Get('me')
+  @ApiResponse({
+    status: 200,
+    type: UserDto,
+  })
+  async me(@Req() req: Request) {
+    return await this.usersService.findById(req.user.id);
+  }
+
   @Get(':id')
   async get(@Param('id', ParseIntPipe) id: number) {
-    return await this.usersService.get(id);
+    return await this.usersService.findById(id);
   }
 
-  @UseGuards(SameUserGuard)
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,

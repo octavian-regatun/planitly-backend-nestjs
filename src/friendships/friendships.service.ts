@@ -1,6 +1,5 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateFriendshipDto } from './dto/createFriendship.dto';
 import { FriendshipStatus } from './entities/FriendshipStatus';
 import { FriendshipType } from './entities/FriendshipType';
 
@@ -12,7 +11,7 @@ export class FriendshipsService {
     requesterId: number,
     recipientId: number,
   ) {
-    return this.prismaService.friendship.findFirst({
+    return await this.prismaService.friendship.findFirst({
       where: {
         requesterId,
         recipientId,
@@ -21,27 +20,23 @@ export class FriendshipsService {
   }
 
   async findByUserId(authenticatedUserId: number, targetUserId) {
-    try {
-      return this.prismaService.friendship.findFirst({
-        where: {
-          OR: [
-            {
-              recipientId: authenticatedUserId,
-              requesterId: targetUserId,
-            },
-            {
-              recipientId: targetUserId,
-              requesterId: authenticatedUserId,
-            },
-          ],
-        },
-      });
-    } catch (e) {
-      throw new HttpException("Can't find friendship", HttpStatus.BAD_REQUEST);
-    }
+    return this.prismaService.friendship.findFirst({
+      where: {
+        OR: [
+          {
+            recipientId: authenticatedUserId,
+            requesterId: targetUserId,
+          },
+          {
+            recipientId: targetUserId,
+            requesterId: authenticatedUserId,
+          },
+        ],
+      },
+    });
   }
 
-  async getAll(userId: number, options: GetAllOptions) {
+  async find(userId: number, options: GetAllOptions) {
     const { type, status } = options;
 
     const query = { where: {} };
@@ -62,6 +57,7 @@ export class FriendshipsService {
     else if (status === 'ACCEPTED') query.where['status'] = 'ACCEPTED';
     else
       query.where['OR'] = [
+        ...query.where['OR'],
         {
           status: 'PENDING',
         },
@@ -70,24 +66,18 @@ export class FriendshipsService {
         },
       ];
 
-    return this.prismaService.friendship.findMany({
+    return await this.prismaService.friendship.findMany({
       ...query,
-      include: {
-        recipient: true,
-        requester: true,
-      },
     });
   }
 
-  async create(requesterId: number, createFriendshipDto: CreateFriendshipDto) {
-    const recipientId = parseInt(createFriendshipDto.recipientId);
-
+  async create(requesterId: number, recipientId: number) {
     if (requesterId === recipientId) throw new Error('Cannot add yourself');
 
     if (await this.checkIfFriendshipExists(requesterId, recipientId))
       throw new Error('Friendship already exists');
 
-    return this.prismaService.friendship.create({
+    return await this.prismaService.friendship.create({
       data: {
         requesterId,
         recipientId,
@@ -96,11 +86,11 @@ export class FriendshipsService {
     });
   }
 
-  async accept(requesterId: number, recipientId: number) {
-    const friendship = await this.checkIfFriendshipExists(
-      requesterId,
-      recipientId,
-    );
+  // TODO: check if user is allowed to update this friendship
+  async accept(id: number) {
+    const friendship = await this.prismaService.friendship.findUnique({
+      where: { id },
+    });
 
     if (!friendship) throw new Error('Friendship does not exist');
 

@@ -7,14 +7,20 @@ import { EventsModule } from './events/events.module';
 import { JwtModule } from './jwt/jwt.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
-import { CalendarModule } from './calendar/calendar.module';
 import { LocationModule } from './location/location.module';
 import { FriendshipsModule } from './friendships/friendships.module';
+import { MapperService } from './mapper/mapper.service';
+import { MapperModule } from './mapper/mapper.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    NestJwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '30d' },
+      global: true,
     }),
     PrismaModule,
     UsersModule,
@@ -22,14 +28,10 @@ import { FriendshipsModule } from './friendships/friendships.module';
     JwtModule,
     EventsModule,
     PassportModule,
-    NestJwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1d' },
-      global: true,
-    }),
-    CalendarModule,
     LocationModule,
     FriendshipsModule,
+    MapperModule,
   ],
+  providers: [MapperService],
 })
 export class AppModule {}

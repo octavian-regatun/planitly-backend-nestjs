@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateFriendshipDto {
+export class UpdateFriendshipDto {
   @ApiProperty()
-  recipientId: number;
+  requesterId: number;
 }

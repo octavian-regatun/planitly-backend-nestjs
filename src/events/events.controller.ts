@@ -4,42 +4,41 @@ import {
   Delete,
   Get,
   Param,
-  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
-  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { JwtGuard } from 'src/jwt/jwt.guard';
 import { CreateEventDto } from './dto/createEvent.dto';
 import { UpdateEventDto } from './dto/updateEvent.dto';
 import { EventsService } from './events.service';
 
+@ApiTags('events')
 @UseGuards(JwtGuard)
 @Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Get()
-  async findAll(
-    @Req() req: Request,
-    @Query('isAuthor', ParseBoolPipe) isAuthor: boolean,
-    // @Query('isParticipating', ParseBoolPipe) isParticipating: boolean,
-  ) {
-    if (isAuthor) return await this.eventsService.findByIsAuthor(req.user.id);
+  async findAll(@Req() req: Request) {
+    return await this.eventsService.findByIsAuthor(req.user.id);
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number) {
+  async findById(@Param('id', ParseIntPipe) id: number) {
     return await this.eventsService.findById(id);
   }
 
   @Post()
   async create(@Req() req: Request, @Body() createEventDto: CreateEventDto) {
-    return await this.eventsService.create(req.user.id, createEventDto);
+    return await this.eventsService.create({
+      ...createEventDto,
+      authorId: req.user.id,
+    });
   }
 
   @Patch(':id')

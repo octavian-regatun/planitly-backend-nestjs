@@ -12,64 +12,84 @@ import {
   Get,
   Param,
   Patch,
-  Query,
   Req,
+  Res,
 } from '@nestjs/common/decorators';
-import { Request } from 'express';
+import { ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { Request, Response } from 'express';
 import { JwtGuard } from 'src/jwt/jwt.guard';
 import { CreateFriendshipDto } from './dto/createFriendship.dto';
-import { FriendshipStatus } from './entities/FriendshipStatus';
-import { FriendshipType } from './entities/FriendshipType';
 import { FriendshipsService } from './friendships.service';
+import { FriendshipDto } from './dto/friendship.dto';
+import { UpdateFriendshipDto } from './dto/updateFriendship.dto';
 
+@ApiSecurity('jwt')
+@ApiTags('friendships')
 @UseGuards(JwtGuard)
 @Controller('friendships')
 export class FriendshipsController {
-  constructor(private readonly friendshipsService: FriendshipsService) {}
+  constructor(private friendshipsService: FriendshipsService) {}
+
+  @ApiResponse({
+    status: 200,
+    type: [FriendshipDto],
+  })
+  @Get()
+  async find(@Req() req: Request, @Res() res: Response) {
+    const friendships = await this.friendshipsService.find(req.user.id, {
+      status: 'ALL',
+      type: 'ALL',
+    });
+
+    if (friendships) {
+      return res.status(HttpStatus.OK).json(friendships);
+    }
+
+    return res.status(HttpStatus.NO_CONTENT).send();
+  }
 
   @Get('users/:id')
-  async findByUserId(@Req() req: Request, @Param('id') id: string) {
-    console.log(req.user.id, id);
-    return await this.friendshipsService.findByUserId(req.user.id, id);
-  }
-
-  @Get()
-  async findAll(
-    @Query('status') status: FriendshipStatus,
-    @Query('type') type: FriendshipType,
+  async findByUserId(
     @Req() req: Request,
+    @Res() res: Response,
+    @Param('id', ParseIntPipe) id: number,
   ) {
-    return await this.friendshipsService.getAll(req.user.id, { status, type });
+    const friendship = await this.friendshipsService.findByUserId(
+      req.user.id,
+      id,
+    );
+
+    if (friendship) {
+      return res.status(HttpStatus.OK).json(friendship);
+    }
+
+    return res.status(HttpStatus.NO_CONTENT).send();
   }
 
+  @ApiResponse({
+    status: 200,
+    type: [FriendshipDto],
+  })
   @Post()
   async create(
     @Req() req: Request,
-    @Body() createFriendshipDto: CreateFriendshipDto,
+    @Body() { recipientId }: CreateFriendshipDto,
   ) {
     try {
-      return await this.friendshipsService.create(
-        req.user.id,
-        createFriendshipDto,
-      );
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+      return await this.friendshipsService.create(req.user.id, recipientId);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
-  @Patch()
-  async update(
-    @Req() req: Request,
-    @Body()
-    updateFriendshipDto: {
-      requesterId: string;
-    },
-  ) {
+  @ApiResponse({
+    status: 200,
+    type: FriendshipDto,
+  })
+  @Patch(':id')
+  async update(@Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.friendshipsService.accept(
-        parseInt(updateFriendshipDto.requesterId),
-        req.user.id,
-      );
+      return await this.friendshipsService.accept(id);
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
     }

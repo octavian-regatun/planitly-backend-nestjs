@@ -23,21 +23,8 @@ export class EventsService {
     });
   }
 
-  async create(userId: number, createEventDto: CreateEventDto) {
-    const { title, description, color, allDay, startAt, endAt } =
-      createEventDto;
-
-    return await this.prismaService.event.create({
-      data: {
-        title,
-        description,
-        color,
-        allDay,
-        startAt,
-        endAt,
-        authorId: userId,
-      },
-    });
+  async create(data: CreateEventDto & { authorId: number }) {
+    return await this.prismaService.event.create({ data });
   }
 
   async update(userId: number, id: number, updateEventDto: UpdateEventDto) {
@@ -54,7 +41,7 @@ export class EventsService {
 
     const event = await this.findById(id);
 
-    const isAuthor = await this._isAuthor(userId, event.authorId);
+    const isAuthor = await this.isAuthor(userId, event.authorId);
     if (!isAuthor) throw new Error('You are not the author of this event');
 
     return await this.prismaService.event.update({
@@ -78,7 +65,7 @@ export class EventsService {
     });
   }
 
-  private async _isAuthor(userId: number, eventAuthorId: number) {
+  private async isAuthor(userId: number, eventAuthorId: number) {
     return userId === eventAuthorId;
   }
 }
