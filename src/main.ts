@@ -29,6 +29,10 @@ async function bootstrap() {
     },
   });
 
+  console.log(
+    `PlanITLY Backend is running on port: ${process.env.PORT || 8080}`,
+  );
+
   await app.listen(process.env.PORT || 8080);
 }
 bootstrap();
