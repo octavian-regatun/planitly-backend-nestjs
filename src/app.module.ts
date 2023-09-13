@@ -11,6 +11,7 @@ import { LocationModule } from './location/location.module';
 import { FriendshipsModule } from './friendships/friendships.module';
 import { MapperService } from './mapper/mapper.service';
 import { MapperModule } from './mapper/mapper.module';
+import { GroupsModule } from './groups/groups.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { MapperModule } from './mapper/mapper.module';
     LocationModule,
     FriendshipsModule,
     MapperModule,
+    GroupsModule,
   ],
   providers: [MapperService],
 })

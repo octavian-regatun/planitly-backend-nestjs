@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { PublicUserDto } from 'src/users/dto/publicUser.dto';
 
 export class FriendshipDto {
   @ApiProperty()
@@ -6,7 +7,11 @@ export class FriendshipDto {
   @ApiProperty()
   recipientId: number;
   @ApiProperty()
+  recipient: PublicUserDto;
+  @ApiProperty()
   requesterId: number;
+  @ApiProperty()
+  requester: PublicUserDto;
   @ApiProperty()
   status: string;
   @ApiProperty()

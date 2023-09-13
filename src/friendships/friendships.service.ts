@@ -68,18 +68,23 @@ export class FriendshipsService {
 
     return await this.prismaService.friendship.findMany({
       ...query,
+      include: {
+        recipient: true,
+        requester: true,
+      },
     });
   }
 
-  async create(requesterId: number, recipientId: number) {
-    if (requesterId === recipientId) throw new Error('Cannot add yourself');
+  async create(authenticatedUserId: number, recipientId: number) {
+    if (authenticatedUserId === recipientId)
+      throw new Error('Cannot add yourself');
 
-    if (await this.checkIfFriendshipExists(requesterId, recipientId))
+    if (await this.checkIfFriendshipExists(authenticatedUserId, recipientId))
       throw new Error('Friendship already exists');
 
     return await this.prismaService.friendship.create({
       data: {
-        requesterId,
+        requesterId: authenticatedUserId,
         recipientId,
         status: 'PENDING',
       },
@@ -87,10 +92,13 @@ export class FriendshipsService {
   }
 
   // TODO: check if user is allowed to update this friendship
-  async accept(id: number) {
+  async accept(authenticatedUserId: number, friendshipId: number) {
     const friendship = await this.prismaService.friendship.findUnique({
-      where: { id },
+      where: { id: friendshipId },
     });
+
+    if (friendship.recipientId !== authenticatedUserId)
+      throw new Error('You are not allowed to accept this friendship');
 
     if (!friendship) throw new Error('Friendship does not exist');
 

@@ -8,6 +8,6 @@ export class SameUserGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest() as Request;
-    return parseInt(req.params.id) === req.user.id;
+    return parseInt(req.params.id) === req.user?.id;
   }
 }

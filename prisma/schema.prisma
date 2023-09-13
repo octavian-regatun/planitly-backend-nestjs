@@ -10,6 +10,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Group {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(255)
+  description String        @db.Text
+  picture     String        @db.VarChar(255)
+  createdAt   DateTime      @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime      @default(now()) @db.Timestamp(0)
+  GroupMember GroupMember[]
+}
+
+enum GroupMemberRole {
+  ADMIN
+  MEMBER
+}
+
+model GroupMember {
+  id        Int             @id @default(autoincrement())
+  role      GroupMemberRole
+  groupId   Int             @db.Integer
+  userId    Int             @db.Integer
+  createdAt DateTime        @default(now()) @db.Timestamp(0)
+  updatedAt DateTime        @default(now()) @db.Timestamp(0)
+  group     Group           @relation(fields: [groupId], references: [id])
+  user      User            @relation(fields: [userId], references: [id])
+}
+
 model Event {
   id           Int                @id @default(autoincrement())
   title        String             @db.VarChar(255)
@@ -68,8 +94,9 @@ model User {
   authProvider                            String             @db.VarChar(255)
   createdAt                               DateTime           @default(now()) @db.Timestamp(0)
   updatedAt                               DateTime           @updatedAt @db.Timestamp(0)
-  EventParticipant                        EventParticipant[]
+  eventParticipants                       EventParticipant[]
   Friendship_Friendship_recipientIdToUser Friendship[]       @relation("Friendship_recipientIdToUser")
   Friendship_Friendship_requesterIdToUser Friendship[]       @relation("Friendship_requesterIdToUser")
   events                                  Event[]
+  GroupMember                             GroupMember[]
 }

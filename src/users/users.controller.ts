@@ -10,14 +10,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { User } from '@prisma/client';
 import { Request } from 'express';
 import { JwtGuard } from 'src/jwt/jwt.guard';
+import { MapperService } from 'src/mapper/mapper.service';
 import { PublicUserDto } from './dto/publicUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
-import { UsersService } from './users.service';
-import { MapperService } from 'src/mapper/mapper.service';
-import { User } from '@prisma/client';
 import { UserDto } from './dto/user.dto';
+import { UsersService } from './users.service';
 
 @ApiSecurity('jwt')
 @ApiTags('users')
