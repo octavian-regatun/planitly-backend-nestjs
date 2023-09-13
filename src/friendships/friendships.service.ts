@@ -97,6 +97,8 @@ export class FriendshipsService {
       where: { id: friendshipId },
     });
 
+    if (!friendship) throw new Error('Friendship does not exist');
+
     if (friendship.recipientId !== authenticatedUserId)
       throw new Error('You are not allowed to accept this friendship');
 

@@ -7,7 +7,7 @@ import { PublicUserDto } from 'src/users/dto/publicUser.dto';
 
 @Injectable()
 export class MapperService implements OnModuleInit {
-  mapper: Mapper;
+  mapper!: Mapper;
 
   onModuleInit() {
     this.createUserMetadata();

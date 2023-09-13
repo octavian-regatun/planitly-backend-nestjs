@@ -2,17 +2,17 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateEventDto {
   @ApiProperty()
-  title: string;
+  title!: string;
   @ApiProperty()
-  description: string;
+  description!: string;
   @ApiProperty()
-  color: string;
+  color!: string;
   @ApiProperty()
-  allDay: boolean;
+  allDay!: boolean;
   @ApiProperty()
-  startAt: Date;
+  startAt!: Date;
   @ApiProperty()
-  endAt: Date;
+  endAt!: Date;
   @ApiProperty()
-  picture: string;
+  picture!: string;
 }

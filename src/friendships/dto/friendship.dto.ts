@@ -3,19 +3,19 @@ import { PublicUserDto } from 'src/users/dto/publicUser.dto';
 
 export class FriendshipDto {
   @ApiProperty()
-  id: number;
+  id!: number;
   @ApiProperty()
-  recipientId: number;
+  recipientId!: number;
   @ApiProperty()
-  recipient: PublicUserDto;
+  recipient!: PublicUserDto;
   @ApiProperty()
-  requesterId: number;
+  requesterId!: number;
   @ApiProperty()
-  requester: PublicUserDto;
+  requester!: PublicUserDto;
   @ApiProperty()
-  status: string;
+  status!: string;
   @ApiProperty()
-  createdAt: Date;
+  createdAt!: Date;
   @ApiProperty()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

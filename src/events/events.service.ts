@@ -41,6 +41,8 @@ export class EventsService {
 
     const event = await this.findById(id);
 
+    if (!event) throw new Error('Event not found');
+
     const isAuthor = await this.isAuthor(userId, event.authorId);
     if (!isAuthor) throw new Error('You are not the author of this event');
 

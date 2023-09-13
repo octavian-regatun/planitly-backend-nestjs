@@ -25,7 +25,7 @@ export class EventsController {
 
   @Get()
   async findAll(@Req() req: Request) {
-    return await this.eventsService.findByIsAuthor(req.user.id);
+    return await this.eventsService.findByIsAuthor(req.user!.id);
   }
 
   @Get(':id')
@@ -37,7 +37,7 @@ export class EventsController {
   async create(@Req() req: Request, @Body() createEventDto: CreateEventDto) {
     return await this.eventsService.create({
       ...createEventDto,
-      authorId: req.user.id,
+      authorId: req.user!.id,
     });
   }
 
@@ -47,7 +47,7 @@ export class EventsController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateEventDto: UpdateEventDto,
   ) {
-    return await this.eventsService.update(req.user.id, id, updateEventDto);
+    return await this.eventsService.update(req.user!.id, id, updateEventDto);
   }
 
   @Delete(':id')

@@ -80,7 +80,7 @@ export class UsersService {
     });
   }
 
-  create(user: User) {
+  create(user: Omit<User, 'id'>) {
     return this.prismaService.user.create({
       data: user,
     });

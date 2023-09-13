@@ -2,13 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class PublicUserDto {
   @ApiProperty()
-  id: number;
+  id!: number;
   @ApiProperty()
-  username: string;
+  username!: string;
   @ApiProperty()
-  firstName: string;
+  firstName!: string;
   @ApiProperty()
-  lastName: string;
+  lastName!: string;
   @ApiProperty()
-  picture: string;
+  picture!: string;
 }

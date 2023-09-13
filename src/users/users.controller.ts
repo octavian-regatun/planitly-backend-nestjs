@@ -50,7 +50,7 @@ export class UsersController {
   })
   @Get('search')
   async search(@Req() req: Request, @Query('query') query: string) {
-    const users = await this.usersService.search(query, req.user.id);
+    const users = await this.usersService.search(query, req.user!.id);
 
     return this.mapperService.mapper.mapArray<User, PublicUserDto>(
       users,
@@ -65,7 +65,7 @@ export class UsersController {
     type: UserDto,
   })
   async me(@Req() req: Request) {
-    return await this.usersService.findById(req.user.id);
+    return await this.usersService.findById(req.user!.id);
   }
 
   @Get(':id')

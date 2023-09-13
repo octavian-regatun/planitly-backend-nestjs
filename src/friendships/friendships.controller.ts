@@ -60,7 +60,7 @@ export class FriendshipsController {
     if (type !== 'ALL' && type !== 'INCOMING' && type !== 'OUTGOING')
       throw new HttpException('Invalid type query', HttpStatus.BAD_REQUEST);
 
-    const friendships = await this.friendshipsService.find(req.user.id, {
+    const friendships = await this.friendshipsService.find(req.user!.id, {
       status: 'ALL',
       type: 'ALL',
     });
@@ -87,7 +87,7 @@ export class FriendshipsController {
     @Param('id', ParseIntPipe) id: number,
   ) {
     const friendship = await this.friendshipsService.findByUserId(
-      req.user.id,
+      req.user!.id,
       id,
     );
 
@@ -114,8 +114,8 @@ export class FriendshipsController {
     @Body() { recipientId }: CreateFriendshipDto,
   ) {
     try {
-      return await this.friendshipsService.create(req.user.id, recipientId);
-    } catch (error) {
+      return await this.friendshipsService.create(req.user!.id, recipientId);
+    } catch (error: any) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
@@ -127,18 +127,18 @@ export class FriendshipsController {
   @Patch(':id')
   async update(@Req() req: Request, @Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.friendshipsService.accept(req.user.id, id);
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+      return await this.friendshipsService.accept(req.user!.id, id);
+    } catch (error: any) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
   @Delete(':id')
   async delete(@Req() req: Request, @Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.friendshipsService.delete(id, req.user.id);
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+      return await this.friendshipsService.delete(id, req.user!.id);
+    } catch (error: any) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 }

@@ -2,13 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateGroupDto {
   @ApiProperty()
-  name: string;
+  name!: string;
   @ApiProperty()
-  description: string;
+  description!: string;
   @ApiProperty()
-  picture: string;
+  picture!: string;
   @ApiProperty()
-  createdAt: Date;
+  createdAt!: Date;
   @ApiProperty()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

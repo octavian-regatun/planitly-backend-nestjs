@@ -29,9 +29,9 @@ export class GroupsController {
   @Post()
   async create(@Req() req: Request, @Body() createGroupDto: CreateGroupDto) {
     try {
-      return await this.groupsService.create(req.user.id, createGroupDto);
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+      return await this.groupsService.create(req.user!.id, createGroupDto);
+    } catch (error: any) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -42,9 +42,9 @@ export class GroupsController {
   @Get()
   async find(@Req() req: Request) {
     try {
-      return await this.groupsService.find(req.user.id);
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+      return await this.groupsService.find(req.user!.id);
+    } catch (error: any) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 }

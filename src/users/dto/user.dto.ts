@@ -3,25 +3,25 @@ import { User } from '@prisma/client';
 
 export class UserDto implements User {
   @ApiProperty()
-  id: number;
+  id!: number;
   @ApiProperty()
-  username: string;
+  username!: string;
   @ApiProperty()
-  picture: string | null;
+  picture!: string;
   @ApiProperty()
-  firstName: string;
+  firstName!: string;
   @ApiProperty()
-  lastName: string;
+  lastName!: string;
   @ApiProperty()
-  email: string;
+  email!: string;
   @ApiProperty()
-  gender: string;
+  gender!: string;
   @ApiProperty()
-  role: string;
+  role!: string;
   @ApiProperty()
-  authProvider: string;
+  authProvider!: string;
   @ApiProperty()
-  createdAt: Date;
+  createdAt!: Date;
   @ApiProperty()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

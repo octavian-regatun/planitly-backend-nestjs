@@ -26,7 +26,7 @@ export class AuthService {
   }
 
   async authenticate(code: string) {
-    const payload = await this.validateGoogleToken(code);
+    const payload = (await this.validateGoogleToken(code)) as TokenPayload;
 
     const user = await this.findOrCreateUser(payload);
 
@@ -39,7 +39,7 @@ export class AuthService {
     const { tokens } = await this.googleClient.getToken(code);
 
     const ticket = await this.googleClient.verifyIdToken({
-      idToken: tokens.id_token,
+      idToken: tokens.id_token as string,
       audience: this.configService.get('GOOGLE_CLIENT_ID'),
     });
 
@@ -49,22 +49,21 @@ export class AuthService {
   }
 
   private async findOrCreateUser(payload: TokenPayload) {
-    const user = await this.userService.findByEmail(payload.email);
+    const user = await this.userService.findByEmail(payload.email as string);
 
     if (user) return user;
 
-    const newUser: User = {
-      id: undefined,
-      email: payload.email,
-      firstName: payload.given_name,
-      lastName: payload.family_name,
+    const newUser: Omit<User, 'id'> = {
+      email: payload.email as string,
+      firstName: payload.given_name as string,
+      lastName: payload.family_name as string,
       gender: Gender.UNKNOWN,
       createdAt: new Date(),
       updatedAt: new Date(),
       username: this.generateRandomUsername(),
       authProvider: Provider.GOOGLE,
       role: Role.BASIC,
-      picture: payload.picture || null,
+      picture: payload.picture || '/',
     };
 
     return this.userService.create(newUser);
