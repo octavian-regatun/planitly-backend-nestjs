@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UpdateUserDto } from './dto/updateUser.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -85,4 +85,10 @@ export class UsersService {
       data: user,
     });
   }
+}
+
+export enum Gender {
+  UNKNOWN = 'UNKNOWN',
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
 }

@@ -10,13 +10,14 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { JwtGuard } from 'src/jwt/jwt.guard';
 import { CreateEventDto } from './dto/createEvent.dto';
 import { UpdateEventDto } from './dto/updateEvent.dto';
 import { EventsService } from './events.service';
 
+@ApiSecurity('jwt')
 @ApiTags('events')
 @UseGuards(JwtGuard)
 @Controller('events')

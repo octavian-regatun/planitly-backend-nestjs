@@ -11,13 +11,13 @@ datasource db {
 }
 
 model Group {
-  id          Int           @id @default(autoincrement())
-  name        String        @db.VarChar(255)
-  description String        @db.Text
-  picture     String        @db.VarChar(255)
-  createdAt   DateTime      @default(now()) @db.Timestamp(0)
-  updatedAt   DateTime      @default(now()) @db.Timestamp(0)
-  GroupMember GroupMember[]
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(255)
+  description  String        @db.Text
+  picture      String        @db.VarChar(255)
+  createdAt    DateTime      @default(now()) @db.Timestamp(0)
+  updatedAt    DateTime      @default(now()) @db.Timestamp(0)
+  groupMembers GroupMember[]
 }
 
 enum GroupMemberRole {
@@ -98,5 +98,5 @@ model User {
   Friendship_Friendship_recipientIdToUser Friendship[]       @relation("Friendship_recipientIdToUser")
   Friendship_Friendship_requesterIdToUser Friendship[]       @relation("Friendship_requesterIdToUser")
   events                                  Event[]
-  GroupMember                             GroupMember[]
+  groupMembers                            GroupMember[]
 }

@@ -14,8 +14,8 @@ import { User } from '@prisma/client';
 import { Request } from 'express';
 import { JwtGuard } from 'src/jwt/jwt.guard';
 import { MapperService } from 'src/mapper/mapper.service';
-import { PublicUserDto } from './dto/publicUser.dto';
-import { UpdateUserDto } from './dto/updateUser.dto';
+import { PublicUserDto } from './dto/public-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
 

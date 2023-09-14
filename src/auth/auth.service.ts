@@ -4,8 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { OAuth2Client, TokenPayload } from 'google-auth-library';
 import { customAlphabet } from 'nanoid';
-import { Gender } from 'src/users/entities/gender.enum';
-import { UsersService } from 'src/users/users.service';
+import { Gender, UsersService } from 'src/users/users.service';
 import { Provider } from './entities/provider.enum';
 import { Role } from './entities/role.enum';
 

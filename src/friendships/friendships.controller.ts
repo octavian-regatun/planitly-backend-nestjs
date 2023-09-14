@@ -52,13 +52,19 @@ export class FriendshipsController {
   async find(
     @Req() req: Request,
     @Res() res: Response,
-    @Query('status') status: string | 'ALL' | 'ACCEPTED' | 'PENDING',
-    @Query('type') type: string | 'ALL' | 'INCOMING' | 'OUTGOING',
+    @Query('status') status: string,
+    @Query('type') type: string,
   ) {
     if (status !== 'ALL' && status !== 'ACCEPTED' && status !== 'PENDING')
-      throw new HttpException('Invalid status query', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Invalid status query, must be of value "ALL", "ACCEPTED", "PENDING".',
+        HttpStatus.BAD_REQUEST,
+      );
     if (type !== 'ALL' && type !== 'INCOMING' && type !== 'OUTGOING')
-      throw new HttpException('Invalid type query', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Invalid type query, must be of value "ALL", "INCOMING", "OUTGOING".',
+        HttpStatus.BAD_REQUEST,
+      );
 
     const friendships = await this.friendshipsService.find(req.user!.id, {
       status: 'ALL',

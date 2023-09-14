@@ -3,7 +3,7 @@ import { PojosMetadataMap, pojos } from '@automapper/pojos';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Friendship, User } from '@prisma/client';
 import { FriendshipDto } from 'src/friendships/dto/friendship.dto';
-import { PublicUserDto } from 'src/users/dto/publicUser.dto';
+import { PublicUserDto } from 'src/users/dto/public-user.dto';
 
 @Injectable()
 export class MapperService implements OnModuleInit {

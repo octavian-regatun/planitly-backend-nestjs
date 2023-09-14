@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
+  Param,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -11,8 +14,9 @@ import {
 import { ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { JwtGuard } from 'src/jwt/jwt.guard';
-import { CreateGroupDto } from './dto/createGroup.dto';
+import { CreateGroupDto } from './dto/create-group.dto';
 import { GroupDto } from './dto/group.dto';
+import { UpdateGroupDto } from './dto/update-group.dto';
 import { GroupsService } from './groups.service';
 
 @ApiSecurity('jwt')
@@ -35,6 +39,19 @@ export class GroupsController {
     }
   }
 
+  @Patch(':id')
+  async update(
+    @Req() req: Request,
+    @Param('id') id: number,
+    @Body() updateGroupDto: UpdateGroupDto,
+  ) {
+    try {
+      return await this.groupsService.update(req.user!.id, updateGroupDto, id);
+    } catch (error: any) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
   @ApiResponse({
     status: 200,
     type: [GroupDto],
@@ -43,6 +60,18 @@ export class GroupsController {
   async find(@Req() req: Request) {
     try {
       return await this.groupsService.find(req.user!.id);
+    } catch (error: any) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+  })
+  @Delete(':id')
+  async delete(@Req() req: Request, @Param('id') id: number) {
+    try {
+      return await this.groupsService.delete(req.user!.id, id);
     } catch (error: any) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
