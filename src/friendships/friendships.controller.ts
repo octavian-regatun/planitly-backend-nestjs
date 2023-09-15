@@ -52,8 +52,8 @@ export class FriendshipsController {
   async find(
     @Req() req: Request,
     @Res() res: Response,
-    @Query('status') status: string,
-    @Query('type') type: string,
+    @Query('status') status?: string,
+    @Query('type') type?: string,
   ) {
     if (status !== 'ALL' && status !== 'ACCEPTED' && status !== 'PENDING')
       throw new HttpException(

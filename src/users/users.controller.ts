@@ -3,13 +3,14 @@ import {
   Controller,
   Get,
   Param,
+  ParseArrayPipe,
   ParseIntPipe,
   Patch,
   Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { Request } from 'express';
 import { JwtGuard } from 'src/jwt/jwt.guard';
@@ -33,9 +34,17 @@ export class UsersController {
     status: 200,
     type: [PublicUserDto],
   })
+  @ApiQuery({
+    name: 'ids',
+    type: [Number],
+    required: false,
+  })
   @Get()
-  async findAll() {
-    const users = await this.usersService.findAll();
+  async find(
+    @Query('ids', new ParseArrayPipe({ items: Number, optional: true }))
+    ids?: number[],
+  ) {
+    const users = await this.usersService.find({ ids });
 
     return this.mapperService.mapper.mapArray<User, PublicUserDto>(
       users,

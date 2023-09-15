@@ -7,8 +7,18 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
-  async findAll() {
-    return await this.prismaService.user.findMany();
+  async find({ ids }: { ids?: number[] } = {}) {
+    const query = { where: {} };
+
+    if (ids) {
+      query.where = {
+        id: {
+          in: ids,
+        },
+      };
+    }
+
+    return await this.prismaService.user.findMany(query);
   }
 
   async search(query: string, loggedUserId: number) {
