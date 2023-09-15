@@ -13,8 +13,8 @@ import {
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { JwtGuard } from 'src/jwt/jwt.guard';
-import { CreateEventDto } from './dto/createEvent.dto';
-import { UpdateEventDto } from './dto/updateEvent.dto';
+import { CreateEventDto } from './dto/create-event.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
 import { EventsService } from './events.service';
 
 @ApiSecurity('jwt')
