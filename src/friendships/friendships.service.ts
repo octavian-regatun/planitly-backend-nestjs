@@ -114,16 +114,17 @@ export class FriendshipsService {
     });
   }
 
-  async delete(friendshipId: number, userId: number) {
+  async delete(friendshipId: number, authenticatedUserId: number) {
+    console.log({ friendshipId, authenticatedUserId });
     const friendship = await this.prismaService.friendship.findFirst({
       where: {
         id: friendshipId,
         OR: [
           {
-            recipientId: userId,
+            recipientId: authenticatedUserId,
           },
           {
-            requesterId: userId,
+            requesterId: authenticatedUserId,
           },
         ],
       },

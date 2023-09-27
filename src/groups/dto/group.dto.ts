@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 import { PublicUserDto } from 'src/users/dto/public-user.dto';
+import { GroupMemberDto } from './group-member.dto';
 
 export class GroupDto {
   @ApiProperty()
@@ -15,6 +16,6 @@ export class GroupDto {
   @ApiProperty()
   @IsString()
   picture!: string;
-  @ApiProperty({ type: PublicUserDto, isArray: true })
-  groupMembers!: PublicUserDto[];
+  @ApiProperty({ type: GroupMemberDto, isArray: true })
+  groupMembers!: GroupMemberDto[];
 }

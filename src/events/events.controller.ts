@@ -26,7 +26,7 @@ export class EventsController {
 
   @Get()
   async findAll(@Req() req: Request) {
-    return await this.eventsService.findByIsAuthor(req.user!.id);
+    return await this.eventsService.find(req.user!.id);
   }
 
   @Get(':id')

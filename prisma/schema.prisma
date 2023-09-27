@@ -18,6 +18,7 @@ model Group {
   createdAt    DateTime      @default(now()) @db.Timestamp(0)
   updatedAt    DateTime      @default(now()) @db.Timestamp(0)
   groupMembers GroupMember[]
+  events       Event[]
 }
 
 enum GroupMemberRole {
@@ -25,15 +26,21 @@ enum GroupMemberRole {
   MEMBER
 }
 
+enum GroupMemberStatus {
+  ACCEPTED
+  PENDING
+}
+
 model GroupMember {
-  id        Int             @id @default(autoincrement())
+  id        Int               @id @default(autoincrement())
   role      GroupMemberRole
-  groupId   Int             @db.Integer
-  userId    Int             @db.Integer
-  createdAt DateTime        @default(now()) @db.Timestamp(0)
-  updatedAt DateTime        @default(now()) @db.Timestamp(0)
-  group     Group           @relation(fields: [groupId], references: [id])
-  user      User            @relation(fields: [userId], references: [id])
+  groupId   Int               @db.Integer
+  userId    Int               @db.Integer
+  createdAt DateTime          @default(now()) @db.Timestamp(0)
+  updatedAt DateTime          @default(now()) @db.Timestamp(0)
+  group     Group             @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user      User              @relation(fields: [userId], references: [id])
+  status    GroupMemberStatus @default(PENDING)
 }
 
 model Event {
@@ -49,6 +56,8 @@ model Event {
   author       User               @relation(fields: [authorId], references: [id])
   createdAt    DateTime           @default(now()) @db.Timestamp(0)
   updatedAt    DateTime           @updatedAt @db.Timestamp(0)
+  groupId      Int                @db.Integer
+  group        Group              @relation(fields: [groupId], references: [id])
   participants EventParticipant[]
 }
 

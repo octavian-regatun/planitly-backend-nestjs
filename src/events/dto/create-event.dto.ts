@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsDateString, IsString } from 'class-validator';
+import { IsBoolean, IsDateString, IsNumber, IsString } from 'class-validator';
 
 export class CreateEventDto {
   @ApiProperty()
@@ -14,6 +14,9 @@ export class CreateEventDto {
   @ApiProperty()
   @IsBoolean()
   allDay!: boolean;
+  @ApiProperty()
+  @IsNumber()
+  groupId!: number;
   @ApiProperty()
   @IsDateString()
   startAt!: Date;

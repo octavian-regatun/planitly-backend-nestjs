@@ -58,11 +58,16 @@ export class GroupsController {
   })
   @Get()
   async find(@Req() req: Request) {
-    try {
-      return await this.groupsService.find(req.user!.id);
-    } catch (error: any) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
+    return await this.groupsService.find(req.user!.id);
+  }
+
+  @ApiResponse({
+    status: 200,
+    type: GroupDto,
+  })
+  @Get(':id')
+  async findOne(@Req() req: Request, @Param('id') id: number) {
+    return await this.groupsService.findById(req.user!.id, id);
   }
 
   @ApiResponse({

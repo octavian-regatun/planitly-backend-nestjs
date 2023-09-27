@@ -7,6 +7,20 @@ import { UpdateEventDto } from './dto/update-event.dto';
 export class EventsService {
   constructor(private prismaService: PrismaService) {}
 
+  async find(authenticatedUserId: number) {
+    return await this.prismaService.event.findMany({
+      where: {
+        group: {
+          groupMembers: {
+            some: {
+              userId: authenticatedUserId,
+            },
+          },
+        },
+      },
+    });
+  }
+
   async findByIsAuthor(id: number) {
     return await this.prismaService.event.findMany({
       where: {

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
@@ -16,11 +16,18 @@ export class GroupsService {
           },
         },
       },
+      include: {
+        groupMembers: {
+          include: {
+            user: true,
+          },
+        },
+      },
     });
   }
 
   async findById(authenticatedUserId: number, groupId: number) {
-    return await this.prismaService.group.findUnique({
+    const group = await this.prismaService.group.findUnique({
       where: {
         id: groupId,
         AND: {
@@ -32,19 +39,30 @@ export class GroupsService {
         },
       },
       include: {
-        groupMembers: true,
+        groupMembers: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
+    if (!group) throw new NotFoundException('Group not found');
+    return group;
   }
 
   async create(authenticatedUserId: number, data: CreateGroupDto) {
     return await this.prismaService.group.create({
       data: {
-        ...data,
+        name: data.name,
+        description: data.description,
+        picture: data.picture,
         groupMembers: {
-          create: {
-            role: 'ADMIN',
-            userId: authenticatedUserId,
+          createMany: {
+            data: data.members.map((userId) => ({
+              userId,
+              role: userId === authenticatedUserId ? 'ADMIN' : 'MEMBER',
+              status: userId === authenticatedUserId ? 'ACCEPTED' : 'PENDING',
+            })),
           },
         },
       },
