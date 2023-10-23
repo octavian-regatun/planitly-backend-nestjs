@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -7,13 +8,21 @@ import {
   Param,
   ParseIntPipe,
   Patch,
+  Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Request } from 'express';
 import { GroupMembersService } from './group-members.service';
 import { JwtGuard } from 'src/jwt/jwt.guard';
+import { CreateGroupMemberDto } from './dto/create-group-member.dto';
+import { GroupMemberDto } from 'src/groups/dto/group-member.dto';
 
 @ApiSecurity('jwt')
 @ApiTags('group-members')
@@ -22,11 +31,33 @@ import { JwtGuard } from 'src/jwt/jwt.guard';
 export class GroupMembersController {
   constructor(private readonly groupMembersService: GroupMembersService) {}
 
+  @ApiOperation({
+    summary: 'Create group member',
+  })
+  @ApiResponse({
+    status: 200,
+    type: GroupMemberDto,
+  })
+  @Post()
+  async create(@Req() req: Request, @Body() body: CreateGroupMemberDto) {
+    return await this.groupMembersService.create(
+      req.user!.id,
+      body.groupId,
+      body.userId,
+    );
+  }
+
+  @ApiOperation({
+    summary: 'Delete group member',
+  })
   @Delete(':id')
   async deleteById(@Req() req: Request, @Param('id') id: number) {
     return await this.groupMembersService.deleteById(req.user!.id, id);
   }
 
+  @ApiOperation({
+    summary: 'Find all group members by group id',
+  })
   @Get('groups/:id/me')
   async findMeByGroupId(@Req() req: Request, @Param('id') id: number) {
     const members = await this.groupMembersService.findByGroupId(
