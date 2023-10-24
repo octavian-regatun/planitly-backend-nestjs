@@ -27,14 +27,21 @@ export class GroupMembersService {
     return await this.prismaService.groupMember.delete({
       where: {
         id,
-        group: {
-          groupMembers: {
-            some: {
-              userId: authenticatedUserId,
-              role: 'ADMIN',
+        OR: [
+          {
+            group: {
+              groupMembers: {
+                some: {
+                  userId: authenticatedUserId,
+                  role: 'ADMIN',
+                },
+              },
             },
           },
-        },
+          {
+            userId: authenticatedUserId,
+          },
+        ],
       },
     });
   }
