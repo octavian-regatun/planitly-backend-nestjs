@@ -67,8 +67,8 @@ export class FriendshipsController {
       );
 
     const friendships = await this.friendshipsService.find(req.user!.id, {
-      status: 'ALL',
-      type: 'ALL',
+      status,
+      type,
     });
 
     if (friendships) {

@@ -14,9 +14,11 @@ export class CreateEventDto {
   @ApiProperty()
   @IsBoolean()
   allDay!: boolean;
-  @ApiProperty()
-  @IsNumber()
-  groupId!: number;
+  @ApiProperty({
+    type: [Number],
+  })
+  @IsNumber({}, { each: true })
+  groupIds!: number[];
   @ApiProperty()
   @IsDateString()
   startAt!: Date;

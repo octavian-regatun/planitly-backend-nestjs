@@ -56,8 +56,7 @@ model Event {
   author       User               @relation(fields: [authorId], references: [id])
   createdAt    DateTime           @default(now()) @db.Timestamp(0)
   updatedAt    DateTime           @updatedAt @db.Timestamp(0)
-  groupId      Int                @db.Integer
-  group        Group              @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groups       Group[]
   participants EventParticipant[]
 }
 

@@ -10,13 +10,18 @@ export class EventsService {
   async find(authenticatedUserId: number) {
     return await this.prismaService.event.findMany({
       where: {
-        group: {
-          groupMembers: {
-            some: {
-              userId: authenticatedUserId,
+        groups: {
+          some: {
+            groupMembers: {
+              some: {
+                userId: authenticatedUserId,
+              },
             },
           },
         },
+      },
+      include: {
+        groups: true,
       },
     });
   }
@@ -34,11 +39,36 @@ export class EventsService {
       where: {
         id,
       },
+      include: {
+        groups: {
+          include: {
+            groupMembers: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 
   async create(data: CreateEventDto & { authorId: number }) {
-    return await this.prismaService.event.create({ data });
+    return await this.prismaService.event.create({
+      data: {
+        title: data.title,
+        description: data.description,
+        color: data.color,
+        allDay: data.allDay,
+        startAt: data.startAt,
+        endAt: data.endAt,
+        authorId: data.authorId,
+        picture: data.picture,
+        groups: {
+          connect: data.groupIds.map((id) => ({ id })),
+        },
+      },
+    });
   }
 
   async update(userId: number, id: number, updateEventDto: UpdateEventDto) {
