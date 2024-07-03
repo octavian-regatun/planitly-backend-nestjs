@@ -93,9 +93,10 @@ model Location {
 model User {
   id                                      Int                @id @default(autoincrement())
   username                                String             @unique @db.VarChar(255)
-  picture                                 String             @db.Text
+  picture                                 String?            @db.Text
   firstName                               String             @db.VarChar(255)
-  lastName                                String             @db.VarChar(255)
+  middleName                              String?            @db.VarChar(255)
+  lastName                                String?            @db.VarChar(255)
   email                                   String             @unique @db.VarChar(255)
   gender                                  String             @db.VarChar(255)
   role                                    String             @db.VarChar(255)

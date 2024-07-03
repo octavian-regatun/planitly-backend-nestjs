@@ -12,14 +12,14 @@ import {
 } from '@nestjs/common';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
-import { JwtGuard } from 'src/jwt/jwt.guard';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventsService } from './events.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiSecurity('jwt')
 @ApiTags('events')
-@UseGuards(JwtGuard)
+@UseGuards(AuthGuard('jwt'))
 @Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}

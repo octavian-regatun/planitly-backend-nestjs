@@ -13,15 +13,15 @@ import {
 } from '@nestjs/common';
 import { ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
-import { JwtGuard } from 'src/jwt/jwt.guard';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { GroupDto } from './dto/group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { GroupsService } from './groups.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiSecurity('jwt')
 @ApiTags('groups')
-@UseGuards(JwtGuard)
+@UseGuards(AuthGuard('jwt'))
 @Controller('groups')
 export class GroupsController {
   constructor(private groupsService: GroupsService) {}

@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Provider } from 'src/auth/entities/provider.enum';
+import { Role } from 'src/auth/entities/role.enum';
+import { customAlphabet } from 'nanoid';
 
 @Injectable()
 export class UsersService {
@@ -90,12 +93,49 @@ export class UsersService {
     });
   }
 
-  create(user: Omit<User, 'id'>) {
+  create(user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>) {
     return this.prismaService.user.create({
       data: user,
     });
   }
+
+  async findOrCreate(payload: UserPayload) {
+    const user = await this.findByEmail(payload.email as string);
+
+    if (user) return user;
+
+    const newUser: Omit<User, 'id' | 'createdAt' | 'updatedAt'> = {
+      email: payload.email as string,
+      firstName: payload.firstName,
+      middleName: payload.middleName || null,
+      lastName: payload.lastName || null,
+      gender: Gender.UNKNOWN,
+      username: this.generateRandomUsername(),
+      authProvider: Provider.GOOGLE,
+      role: Role.BASIC,
+      picture: payload.picture,
+    };
+
+    return this.create(newUser);
+  }
+
+  generateRandomUsername() {
+    const usernameGenerator = customAlphabet('1234567890abcdef', 10);
+    const randomUsername = usernameGenerator();
+
+    return randomUsername;
+  }
 }
+
+export type UserPayload = {
+  id: string;
+  firstName: string;
+  middleName?: string;
+  lastName?: string;
+  email: string;
+  picture: string;
+  provider: string;
+};
 
 export enum Gender {
   UNKNOWN = 'UNKNOWN',

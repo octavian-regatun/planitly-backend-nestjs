@@ -20,13 +20,13 @@ import {
 } from '@nestjs/swagger';
 import { Request } from 'express';
 import { GroupMembersService } from './group-members.service';
-import { JwtGuard } from 'src/jwt/jwt.guard';
 import { CreateGroupMemberDto } from './dto/create-group-member.dto';
 import { GroupMemberDto } from 'src/groups/dto/group-member.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiSecurity('jwt')
 @ApiTags('group-members')
-@UseGuards(JwtGuard)
+@UseGuards(AuthGuard('jwt'))
 @Controller('group-members')
 export class GroupMembersController {
   constructor(private readonly groupMembersService: GroupMembersService) {}

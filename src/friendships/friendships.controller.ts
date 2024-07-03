@@ -18,15 +18,15 @@ import {
 } from '@nestjs/common/decorators';
 import { ApiQuery, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { JwtGuard } from 'src/jwt/jwt.guard';
 import { CreateFriendshipDto } from './dto/createFriendship.dto';
 import { FriendshipDto } from './dto/friendship.dto';
 import { FriendshipsService } from './friendships.service';
 import { MapperService } from 'src/mapper/mapper.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiSecurity('jwt')
 @ApiTags('friendships')
-@UseGuards(JwtGuard)
+@UseGuards(AuthGuard('jwt'))
 @Controller('friendships')
 export class FriendshipsController {
   constructor(

@@ -13,16 +13,16 @@ import {
 import { ApiQuery, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { Request } from 'express';
-import { JwtGuard } from 'src/jwt/jwt.guard';
 import { MapperService } from 'src/mapper/mapper.service';
 import { PublicUserDto } from './dto/public-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiSecurity('jwt')
 @ApiTags('users')
-@UseGuards(JwtGuard)
+@UseGuards(AuthGuard('jwt'))
 @Controller('users')
 export class UsersController {
   constructor(

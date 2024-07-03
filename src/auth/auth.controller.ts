@@ -1,38 +1,50 @@
 import {
-  Body,
   Controller,
   Get,
-  HttpException,
   HttpStatus,
-  Post,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { JwtGuard } from 'src/jwt/jwt.guard';
-import { AuthService } from './auth.service';
+import { UserPayload, UsersService } from 'src/users/users.service';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private userService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
-  @Post('google')
-  async googleLogin(@Body() body: { code: string }, @Res() res: Response) {
-    const { code } = body;
-
-    try {
-      const jwt = await this.authService.authenticate(code);
-      return res.json(jwt);
-    } catch (e: any) {
-      throw new HttpException('Invalid token', HttpStatus.BAD_REQUEST);
-    }
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth() {
+    // This method is empty because @UseGuards(AuthGuard('google')) automatically redirects the user to the Google login page
   }
 
-  @UseGuards(JwtGuard)
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthRedirect(@Req() req, @Res() res: Response) {
+    const userPayload = req.user as UserPayload;
+
+    const user = await this.userService.findOrCreate(userPayload);
+    const jwt = await this.jwtService.sign(user);
+
+    return res
+      .cookie('jwt', jwt, {
+        httpOnly: true,
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      })
+      .redirect('http://localhost:3000');
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Get()
-  checkAuth(): HttpStatus {
-    return HttpStatus.OK;
+  checkAuth(@Res() res: Response) {
+    return res.status(HttpStatus.OK).send();
   }
 }

@@ -11,6 +11,8 @@ export class UserDto implements User {
   @ApiProperty()
   firstName!: string;
   @ApiProperty()
+  middleName: string | null = null;
+  @ApiProperty()
   lastName!: string;
   @ApiProperty()
   email!: string;
